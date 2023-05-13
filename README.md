@@ -1,6 +1,114 @@
 # 23-Project1-R
 R언어 기반 실무 프로젝트
 
+# 11주차 수업내용
+## 다중변수 데이터 분석
+### 상관관계
+```R
+# 데이터 확인
+head(pressure)
+
+# 산점도 작성
+plot(pressure$temperature,    # x축 데이터
+     pressure$pressure,       # y축 데이터
+     main='온도와 기압',      # 그래프 제목
+     xlab='온도(화씨)',       # x축 레이블
+     ylab='기압',             # y축 레이블
+)
+
+# 상관계수 확인
+cor(pressure$temperature, pressure$pressure)
+결과값 : [1] 0.7577923
+```
+상관계수는 -1 부터 1의 값을 가지는데,
+-1에 가까울 수록 음의 상관관계(반비례)
+1에 가까울 수록 양의 상관관계(비례)
+0인 경우는 두 변수 사이에 상관성을 찾기 어렵다는 걸 뜻한다.
+
+데이터프레임을 이용해 다중변수 사이의 상관관계를 나타낼 수도 있음
+```R
+# 데이터 확인
+st <- data.frame(state.x77)
+head(st)
+
+# 다중 산점도 작성
+plot(st)
+
+# 다중 상관계수
+cor(st)
+```
+---
+
+## 결측값에 대해 알아보자
+
+결측값을 처리하는 방법 2가지
+- 결측값을 제거하거나 제외한 후 분석
+- 결측값을 추정하여 적당한 값으로 치환한 후 분석
+
+### 벡터의 결측값
+```R
+z <- c(1,2,3,NA,5,NA,8)  # 결측값이 포함된 벡터 z
+sum(z)                   # 정상 계산이 되지 않음
+결과값 : [1] NA
+is.na(z)                 # NA 여부 확인
+결과값 : [1] FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE
+sum(is.na(z))            # NA 개수 확인
+결과값 : [1] 2
+sum(z, na.rm=TRUE)       # NA를 제외하고 합계를 계산
+결과값 : [1] 19
+```
+
+```R
+z1 <- c(1,2,3,NA,5,NA,8)
+z2 <- c(5,6,1,NA,3,NA,7)
+z1[is.na(z1)] <- 0 # NA 0으로 치환 TRUE인 인덱스만 가져오니까
+z3 <- as.vector(na.omit(z2)) # NA 제거하고 새로운 백터 생성
+```
+**na.omit()함수는 NA를 제거하는 함수인데, 결과의 자료구조가 벡터가 아니기 때문에 as.vector() 함수를 이용하여 벡터로 만든다.**
+
+### 매트릭스와 데이터프레임의 결측값
+
+```R
+# NA 포함하는 테스트 데이터
+x <- iris
+x[1,2] <- NA; x[1,3] <- NA
+x[2,3] <- NA; x[3,4] <- NA
+head(x)
+
+# 열별로 결측값이 몇 개인지 확인하는 방법 (for문)
+for(i in 1:ncol(x)){
+    this.na <- is.na(x[i])
+    cat(colnames(x)[i], '\t', sum(this.na), '\n')
+}
+
+# 열별로 결측값이 몇 개인지 확인하는 방법 (apply)
+col_na <- function(y){
+  return(sum(is.na(y)))
+}
+na_count <- apply(x, 2, FUN=col_na)
+na_count
+
+# 행별로 결측값이 몇 개인지 확인하는 방법
+rowSums(is.na(x))
+sum(rowSums(is.na(x))>0)
+sum(is.na(x))
+
+# 결측값 제외하고 새로운 데이터셋 만드는 방법(complete.cases())
+head(x)
+x[!complete.cases(x),]        # NA가 포함된 행들을 나타냄
+y <- x[complete.cases(x),]    # NA가 포홤된 행들을 제거
+head(y)                       # 새로운 데이터셋 y의 내용 확인
+```
+
+
+
+# 10주차 수업내용
+결석 
+
+# 9주차 수업내용
+
+진도 : ???p ~ 
+
 # 7주차 수업내용
 
 ## 반복문 다루기

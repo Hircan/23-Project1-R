@@ -33,3 +33,4 @@ mydiv <- function(temp1, temp2){
 a <- mydiv(1,2)
 a결과값 : 3
 ```
+
