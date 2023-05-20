@@ -1,6 +1,117 @@
 # 23-Project1-R
 R언어 기반 실무 프로젝트
 
+# 12주차 수업내용
+
+## 정렬
+
+>정렬 : 주어진 기준에 따라 데이터를 크기순으로 재배열하는 과정
+
+### 벡터의 정렬
+
+```R
+v1 <- c(1,7,6,8,4,2,3)
+v1 <- sort(v1) # 오름차순
+v2 <- sort(v1, decreasing=T) # 내림차순
+결과
+v1 : [1] 1 2 3 4 6 7 8
+v2 : [1] 8 7 6 4 3 2 1
+```
+
+문자열도 정렬이 가능하고 한글의 경우 가나다 순으로 정렬이 됨
+NA가 포함된 벡터를 정렬하면 오름차순 내림차순 상관없이 NA 값들은 맨 뒤쪽에 위치함
+
+`sort()`함수는 값에 크기에 따라 값들을 정렬
+`order()`함수는 값의 크기에 따라 값들의 인덱스를 정렬
+
+```R
+name <- c('정대일','강재구','신현석','홍길동')
+order(name) # 오름챃순
+order(name, decreasing=T) # 내림차순
+
+idx <- order(name)
+name[idx] # 오름차순 정렬
+결과
+idx : [1] 2 3 1 4
+name[idx] : [1] "강재구" "신현석" "정대일" "홍길동"
+```
+
+### 매트릭스와 데이터프레임의 정렬
+
+```R
+head(iris)
+order(iris$Sepal.Length)
+iris[order(iris$Sepal.Length),] # 오름차순 정렬
+iris[order(iris$Sepal.Length, decreasing=1),] # 내림차순 정렬
+iris.new <- iris[order(iris$Sepal.Length),] # 정렬된 데이터 저장
+head(iris.new)
+iris[order(iris$Specties, decreasing=T, iris$Petal.Length),] # 정렬 기준이 2개
+```
+
+## 샘플링
+> 샘플링 : 주어진 값들이 있을 때 그중에서 임의의 개수만큼 값들을 추출하는 작업
+
+> 비복원 추출 : 한 번 뽑은 값은 제외한 뒤 새로 추출
+
+> 복원 추출 : 뽑았던 값을 다시 포함시켜 새로 추출
+
+**샘플링이 필요할 때 : 데이터셋이 너무 커 분석에 시간이 많이 걸리는 경우, 일부의 데이터만 추출하여 대략의 결과를 미리 확인**
+
+```R
+# 샘플링 예시
+idx <- sample(1:nrow(iris), size=50, replace=F)
+iris.50 <- iris
+```
+
+## 조합
+
+> 조합(combination) : 주어진 데이터값 중에서 몇 개씩 짝을 지어 추출하는 작업으로, `combn()`함수를 사용함
+
+```R
+# 조합 예시
+combn(1:5,3)  # 1~5에서 3개를 뽑는 조합
+x <- c("red","green","blue","black","white")
+com <-  combn(x,2)
+
+for(i in 1:ncol(com)){
+  cat(com[,1], '\n')
+}
+```
+
+## 집계
+
+> 집계(aggregation) : 데이터의 그룹에 대해서 합계나 평균을 계산하는 작업
+
+```R
+# 집계 예시
+agg <- aggregate(iris[,-5], by=list(품종=iris$Species),FUN=mean)
+
+결과
+        품종 Sepal.Length Sepal.Width Petal.Length Petal.Width
+1     setosa        5.006       3.428        1.462       0.246
+2 versicolor        5.936       2.770        4.260       1.326
+3  virginica        6.588       2.974        5.552       2.026
+
+```
+## 고급 그래프 작성하기
+
+### 나무지도 작성방법
+
+```R
+install.packages('treemap')
+library(treemap)
+data(GNI2014)
+head(GNI2014)
+treemap(GNI2014,
+        index = c('continent', 'iso3'), # 계층 구조
+        vSize = 'population', # 타일 크기
+        vColor= 'GNI', # 타일 컬러
+        type = 'value', # 타일컬러링방법
+        # bg.labels = "220", # 레이블배경색
+        title = "World's GNI") # 제목
+```
+**버그인지 bg.labels를 이용하면 오류가 남 오픈소스가 변경된 듯한데 검색해도 잘 안나오니 배경색은 빼도록 하자**
+
 # 11주차 수업내용
 ## 다중변수 데이터 분석
 ### 상관관계
